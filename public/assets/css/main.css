@@ -1,0 +1,138 @@
+/************
+* jqWidgets
+************/
+
+/* Corrige conflitos entre Bootstrap e jqWidgets */
+.jqx-grid * {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+.jqx-grid-cell .btn:first-child {
+	margin-left: 5px;
+}
+
+.jqx-grid-cell .btn {
+	margin-top: 4px;
+}
+
+/************
+* Downloads
+************/
+
+.un-anexos {
+	margin-top: -5px;
+}
+
+.un-anexo {
+	font-size: 0.9em;
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	
+	margin-top: 5px;
+	margin-left: 1px;
+	
+	padding: 3px;
+}
+
+.un-anexo-nome {
+	margin-top: 1px;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.un-anexo-tamanho {
+	
+	margin-top: 1px;
+	color: gray;
+	font-size: .95em;
+	text-align: right;
+	vertical-align: middle;
+
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:hidden;
+}
+
+.un-anexo .progress {
+	margin-bottom: 0px !important;
+}
+
+/************
+* Selecionar Alunos
+************/
+
+            .logo-min {
+                margin-top: -5px;
+            }
+
+            .un-navbar-usuario {
+				width: 130px; 
+				white-space: nowrap;
+				overflow:hidden;
+				text-overflow:ellipsis;
+            }
+
+.un-alunos {
+	margin-top: -5px;
+}
+
+.un-aluno {
+	font-size: 0.9em;
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	
+	margin-top: 5px;
+	margin-left: 1px;
+	
+	padding: 3px;
+}
+
+.un-aluno-nome {
+	margin-top: 1px;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.un-tipo {
+	background-color: #fff;
+	border: 1px solid #eee;
+}
+
+.un-tipo-descricao:not(.collapsed)[data-toggle=collapse] span:before {
+	content: '-  ';
+	font-weight: bold;
+}
+
+.un-tipo-descricao[data-toggle=collapse] span:before {
+	content: '+  ';
+	font-weight: bold;
+}
+
+#modalTipoAtividade [data-toggle="collapse"] {
+	cursor: pointer;
+}
+
+/************
+* Bootstrap Extensions
+************/
+
+.label-waiting {
+	background-color: #F0EA4E;
+}
+
+
+/************
+* Adminsitração
+************/
+
+.un-form-footer {
+	margin-top: 5px;
+}
+
+.un-form-footer input+a{
+	margin-left: 14px;
+}
+
