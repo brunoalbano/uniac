@@ -10,7 +10,7 @@
 		/* Oculta a url do link quando imprimindo */
 		@media print {
 			a[href]:after {
-			content: none !important;
+				content: none !important;
 			}
 		}
 	</style>
@@ -68,10 +68,14 @@
 					<col>
 					<col style="width: 130px">
 					<col style="width: 50px">
+					<col style="width: 50px">
+					<col style="width: 50px">
 				<thead>
 					<tr>
 						<th>Aluno</th>
 						<th>R.A.</th>
+						<th>Horas aceitas</th>
+						<th>Horas faltando</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -85,6 +89,16 @@
 							<td>
 								<a href="{{ url('atividades/relatorio/matricula') . '/' . $value->codigo . $opcoesUrl }}">
 								{{ $value->usuario->login }}
+								</a>
+							</td>
+							<td>
+								<a href="{{ url('atividades/relatorio/matricula') . '/' . $value->codigo . $opcoesUrl }}">
+								{{ $value->horas_aceitas }}
+								</a>
+							</td>
+							<td>
+								<a href="{{ url('atividades/relatorio/matricula') . '/' . $value->codigo . $opcoesUrl }}">
+								{{ $value->horas_faltando }}
 								</a>
 							</td>
 						</tr>
