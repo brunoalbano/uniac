@@ -106,7 +106,7 @@
         </div>
     @endif
 
-	<header class="row">
+	<header class="row hidden-print">
 		
 		<div class="col-xs-3 col-md-2">
 			<a href="{{ url('atividades?status=' . $status . '&pesquisa=' . $pesquisa . '&page=' . $page) }}" class="btn btn-default btn-block">Voltar</a>
@@ -150,6 +150,10 @@
 					</div>
 				@endif
 			@endif
+		@elseif(Auth::user()->supervisor || Auth::user()->administrador)
+			<div class="col-xs-3 col-sm-2 col-md-offset-1 col-lg-1 col-lg-offset-5" onclick="return confirm('Deseja realmente reabrir a atividade?')">
+				<a class="btn btn-warning btn-block" href="{{ url('atividades/' . $model->codigo . '/reabrir') }}" title="Reabrir atividade"><span class="glyphicon glyphicon-repeat"></span></a>
+			</div>
 		@else
 			<div class="col-xs-6 col-md-7 col-lg-8">
 			</div>
@@ -343,7 +347,7 @@
 
 							  	@if(Auth::user()->aluno || Auth::user()->supervisor || Auth::user()->administrador)
 									<p>
-										<button type="button" class=" btn btn-default btn-xs un-atividade-responder"><span class="glyphicon glyphicon-comment"></span>&nbsp;Responder</button>
+										<button type="button" class=" btn btn-default btn-xs un-atividade-responder hidden-print"><span class="glyphicon glyphicon-comment"></span>&nbsp;Responder</button>
 									</p>
 								@endif
 							</blockquote>

@@ -510,6 +510,44 @@ class AtividadesController extends BaseController {
 		return Redirect::to('atividades')->with('success', 'Atividade excluída com sucesso.');
 	}
 
+	public function getReabrir($atividade)
+	{
+		$permissao = (Auth::user()->supervisor || Auth::user()->administrador) && ($atividade->aceita || $atividade->recusada);
+
+		// Aluno não pode excluir atividades aceitas ou recusadas
+		if (!$permissao)
+			App::abort(403);
+
+		$this->validarPermissaoDoUsuarioParaMatricula($atividade->matricula_codigo);
+
+		DB::transaction(function() use(&$atividade)
+		{
+			$tipo_atividade_codigo = (int)Input::get('tipo_atividade_codigo');
+
+			$atividade->status = Atividade::AGUARDANDO_AVALIACAO;
+			$atividade->horas_aceitas = 0;
+			$atividade->usuario_resp_avaliacao_codigo = null;
+			$atividade->motivo_recusa_codigo = null;
+			$atividade->avaliado_em = null;
+			$sucesso = $atividade->save();
+
+			$comentario = new Comentario();
+
+			$mensagem = 'Atividade reaberta';
+
+			$comentario->interno = $mensagem;
+			$comentario->usuario()->associate(Auth::user());
+
+			$atividade->comentarios()->save($comentario);	
+
+			$matricula = Matricula::find($atividade->matricula_codigo);
+			$matricula->horas_aceitas = $matricula->processarHoras();
+			$matricula->save();
+		});
+
+		return Redirect::to('atividades/' . $atividade->codigo . $this->obterQueryString())->with('success', 'Atividade reaberta com sucesso.');
+	}
+
 	public function getMotivosRecusa()
 	{
 		return Response::json(MotivoRecusa::all());
