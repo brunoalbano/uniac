@@ -11,7 +11,13 @@
 		<h2>Redefinir senha</h2>
 
 		<div>
-			Para redefinir a sua senha, complete esse formulário: {{ URL::to('password/reset', array($token)) }}.
+			Para redefinir a sua senha clique sobre o endereço abaixo ou copie e cole na barra de endereço do seu navegador:
+		</div>
+
+		<br/>
+
+		<div style="text-align: center">
+			<a href="{{ URL::to('password/reset', array($token)) }}">{{ URL::to('password/reset', array($token)) }}</a>
 		</div>
 
 		<br/>
