@@ -120,6 +120,8 @@ Route::group(array('before' => 'auth'), function()
 			Route::post('{atividade}/aceitar', 'Controllers\AtividadesController@postAceitar');
 
 			Route::post('{atividade}/recusar', 'Controllers\AtividadesController@postRecusar');
+
+			Route::get('{atividade}/reabrir', 'Controllers\AtividadesController@getReabrir');
 		});
 	});
 });
