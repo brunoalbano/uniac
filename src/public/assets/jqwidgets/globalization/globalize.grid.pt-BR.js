@@ -57,7 +57,7 @@ function getGridLocalization() {
         validationstring: "Valor informado é inválido",
         emptydatastring: "Sem dados para exibir",
         filterselectstring: "Select Filter",
-        loadtext: "Carregando...",
+        loadtext: "...",
         clearstring: "Limpar",
         todaystring: "Hoje"
     };
