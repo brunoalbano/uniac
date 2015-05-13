@@ -9,7 +9,7 @@ class Helpers {
 	public static function dateDescription($date)
 	{
 		if (is_string($date))
-			$date = date_parse($date);
+			$date = new DateTime($date);
 
 		$formattest = 'd/M/Y';
 		$datetest = date_format($date, $formattest);

@@ -128,7 +128,7 @@ class BFormBuilder {
         return $this->formGroup($name, $label, Form::file($name, $options));
     }
 
-    public function date($name, $label, $value, $options = array())
+    public function date($name, $label, $value = null, $options = array())
     {
         $options = $this->prepareInputOptions($name, $options);
 
