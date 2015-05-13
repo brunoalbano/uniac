@@ -4,7 +4,7 @@ class Matricula extends BaseEloquent {
 	const ATIVO = 1;
 	const INATIVO = 2;
 	const BLOQUEADO = 3;
-	const HOMOLOGADO = 4; 
+	const HOMOLOGADO = 4;
 
 	/**
 	 * The database table used by the model.
@@ -27,9 +27,9 @@ class Matricula extends BaseEloquent {
     {
         $resultado = $this->processarTipos();
 
-        $horas_necessarias = $this->horas_necessarias;
+        $horas_necessarias = (int)$this->horas_necessarias;
 
-        $horas_necessarias_obrigatorias = $this->horas_necessarias_obrigatorias;
+        $horas_necessarias_obrigatorias = (int)$this->horas_necessarias_obrigatorias;
 
         $horas_aceitas_normais = (int)$this->saldo_anterior;
 
@@ -37,8 +37,8 @@ class Matricula extends BaseEloquent {
 
         foreach ($resultado as $r) {
             if (empty($r['tipo']->tipo_atividade_codigo)) {
-                if ($r['tipo']->obrigatorio)
-                    $horas_aceitas_obrigatorias += $r['horas_aceitas'];                
+                if ((int)$r['tipo']->obrigatorio)
+                    $horas_aceitas_obrigatorias += $r['horas_aceitas'];
                 else
                     $horas_aceitas_normais += $r['horas_aceitas'];
             }
@@ -53,13 +53,12 @@ class Matricula extends BaseEloquent {
         return $horas_aceitas_normais + $horas_aceitas_obrigatorias;
     }
 
-    public function processarTipos()
+    public function processarTipos($data_inicial = null, $data_final = null)
     {
         $matricula_codigo = $this->codigo;
 
-        $tipos = DB::table('atividade')
+        $tipos = Atividade::aceita($matricula_codigo, $data_inicial, $data_final)
                     ->select(DB::raw('tipo_atividade_codigo, sum(horas_aceitas) horas_aceitas'))
-                    ->where('matricula_codigo', $matricula_codigo)
                     ->groupBy('tipo_atividade_codigo')
                     ->lists('horas_aceitas', 'tipo_atividade_codigo');
 
@@ -77,8 +76,8 @@ class Matricula extends BaseEloquent {
                 $tipo = TipoAtividade::find($tipo_atividade_codigo, array('tipo_atividade_codigo', 'horas', 'obrigatorio'));
 
                 $resultado[$tipo_atividade_codigo] = array(
-                    'tipo' => $tipo, 
-                    'horas_aceitas' => 0, 
+                    'tipo' => $tipo,
+                    'horas_aceitas' => 0,
                     'possui_itens' => $possuiItens
                 );
             }
@@ -127,5 +126,5 @@ class Matricula extends BaseEloquent {
             return 0;
         else
             return max(0, $this->horas_necessarias - (int)$this->horas_aceitas);
-    }    
+    }
 }

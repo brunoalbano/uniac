@@ -31,7 +31,7 @@ class AtividadesController extends BaseController {
 	public function __construct(AnexoControlador $anexos)
 	{
 		parent::__construct();
-		
+
 		$this->anexos = $anexos;
 		$this->anexos->definirEscopo('atividades');
 	}
@@ -51,8 +51,8 @@ class AtividadesController extends BaseController {
 		}
 		else {
 			$parts = explode('-', $str);
-			
-			if (count($parts) === 3) 
+
+			if (count($parts) === 3)
 				return DateTime::createFromFormat('Y-m-d', $str);
 		}
 
@@ -100,13 +100,13 @@ class AtividadesController extends BaseController {
 
 				$date->setTime(23, 59, 59);
 				$end = $date->format('c');
-				
+
 				$query->whereRaw('atividade.atualizado_em BETWEEN ? AND ?', array($start, $end));
 			}
 			else
 			{
 				if (Auth::user()->aluno == false) {
-					
+
 					$query
 						->where(function($query) use($pesquisa) {
 							$query
@@ -143,7 +143,7 @@ class AtividadesController extends BaseController {
 	}
 
 	public function postCriar()
-	{		
+	{
 		if (Auth::user()->convidado)
 			App::abort(403);
 
@@ -158,7 +158,7 @@ class AtividadesController extends BaseController {
 			'tipo_atividade_codigo' => Input::get('tipo_atividade_codigo'),
 			'descricao' => Input::get('descricao'),
 			'justificativa' => Input::get('justificativa'),
-			'usuario_resp_criacao_codigo' => Auth::user()->codigo			
+			'usuario_resp_criacao_codigo' => Auth::user()->codigo
 		);
 
 		$tipo = TipoAtividade::find($modelo['tipo_atividade_codigo']);
@@ -188,13 +188,13 @@ class AtividadesController extends BaseController {
 				$modelo['horas_aceitas'] = 0;
 			else
 				$modelo['horas_aceitas'] = $modelo['horas_requisitadas'];
-			
+
 			$modelo['usuario_resp_avaliacao_codigo'] = Auth::user()->codigo;
 			$modelo['atualizado_em'] = new DateTime('NOW');
 		}
-		
+
 		$anexosControlador = $this->anexos;
-		
+
 		$alunos = array();
 
 		DB::transaction(function() use ($modelo, $matriculas, $anexosControlador, &$alunos)
@@ -216,7 +216,7 @@ class AtividadesController extends BaseController {
 					$atividade->anexos()->sync($anexos);
 					$atividade->save();
 
-					if (Auth::user()->aluno == false) {						
+					if (Auth::user()->aluno == false) {
 						$matricula = Matricula::find($atividade->matricula_codigo);
 						$matricula->horas_aceitas = $matricula->processarHoras();
 						$matricula->save();
@@ -231,10 +231,10 @@ class AtividadesController extends BaseController {
 
 					$atividade->comentarios()->save($comentario);
 				}
-				
+
 			}
 		});
-				
+
 		if (Auth::user()->aluno) {
 			$matricula_codigo = Session::get('matricula_codigo');
 			$matricula = Matricula::find($matricula_codigo);
@@ -262,7 +262,7 @@ class AtividadesController extends BaseController {
 										->count() > 0;
 
 		if (!$possuiPermissaoParaCurso)
-			App::abort(403);		
+			App::abort(403);
 	}
 
 	private function validarPermissaoDoUsuarioParaMatricula($matricula_codigo)
@@ -311,7 +311,7 @@ class AtividadesController extends BaseController {
 
 	public function getListarAnexos($atividade_codigo)
 	{
-		return $this->anexos->listar($atividade_codigo);	
+		return $this->anexos->listar($atividade_codigo);
 	}
 
 	public function getVisualizar($atividade)
@@ -371,11 +371,11 @@ class AtividadesController extends BaseController {
 		$atividade->status = Atividade::AGUARDANDO_AVALIACAO;
 
 		$anexosControlador = $this->anexos;
-		
+
 		DB::transaction(function() use (&$atividade, $anexosControlador)
 		{
 			$atividade->save();
-				
+
 			$anexos = $anexosControlador->confirmarAlteracoes(Input::get('codigo'));
 
 			if ($anexos !== false)
@@ -408,7 +408,7 @@ class AtividadesController extends BaseController {
 		$this->validarPermissaoDoUsuarioParaMatricula($atividade->matricula_codigo);
 
 		$mensagem = '';
-		
+
 		if (Auth::user()->aluno)
 		{
 			if ($atividade->aguardando_correcao)
@@ -460,7 +460,7 @@ class AtividadesController extends BaseController {
 
 			// Verifica permissão para o tipo de atividade
 			if (Auth::user()->supervisor && $tipo->ativo == 0)
-				return App::abort(403);			
+				return App::abort(403);
 		}
 
 		DB::transaction(function() use(&$atividade)
@@ -482,15 +482,15 @@ class AtividadesController extends BaseController {
 				$mensagem .= ". Tipo de atividade alterado pelo supervisor, valor antigo: " . $atividade->tipo_atividade->descricao;
 
 			$comentario->interno = $mensagem;
-			$comentario->comentario = Input::get('comentario', ''); 
+			$comentario->comentario = Input::get('comentario', '');
 			$comentario->usuario()->associate(Auth::user());
 
-			$atividade->comentarios()->save($comentario);	
+			$atividade->comentarios()->save($comentario);
 
 			$matricula = Matricula::find($atividade->matricula_codigo);
 			$matricula->horas_aceitas = $matricula->processarHoras();
 			$matricula->save();
-		});	
+		});
 
 		$this->enviarEmailNotificacaoParaAluno($atividade->matricula()->first()->usuario()->first(), $atividade->titulo);
 
@@ -538,7 +538,7 @@ class AtividadesController extends BaseController {
 			$comentario->interno = $mensagem;
 			$comentario->usuario()->associate(Auth::user());
 
-			$atividade->comentarios()->save($comentario);	
+			$atividade->comentarios()->save($comentario);
 
 			$matricula = Matricula::find($atividade->matricula_codigo);
 			$matricula->horas_aceitas = $matricula->processarHoras();
@@ -583,12 +583,12 @@ class AtividadesController extends BaseController {
 		return Redirect::to('atividades/' . $atividade->codigo . $this->obterQueryString())->with('success', 'Atividade recusada com sucesso.');
 	}
 
-	public function getTurmas() 
-	{		
+	public function getTurmas()
+	{
 		return Turma::getForGroupedSelect();
 	}
 
-	public function getTurmasCoordenador() 
+	public function getTurmasCoordenador()
 	{
 		return Turma::getForGroupedSelectForCoordenador();
 	}
@@ -639,7 +639,7 @@ class AtividadesController extends BaseController {
 
 		$query = TipoAtividade
 						::select(DB::raw('codigo, descricao, horas, nivel,
-							EXISTS (SELECT 1 FROM tipo_atividade as item WHERE item.tipo_atividade_codigo = tipo_atividade.codigo) as possuiItens'))						
+							EXISTS (SELECT 1 FROM tipo_atividade as item WHERE item.tipo_atividade_codigo = tipo_atividade.codigo) as possuiItens'))
 						->where('tipo_atividade_codigo', $tipoatividade)
 						->where('curso_codigo', $curso_codigo);
 
@@ -667,10 +667,7 @@ class AtividadesController extends BaseController {
 	}
 
 	public function getRelatorioAluno($matricula_codigo)
-	{
-		$turma_codigo = Input::get('turma_codigo');
-		$status = Input::get('status');
-
+	{		
 		$this->validarPermissaoDoUsuarioParaMatricula($matricula_codigo);
 
 		$matricula = Matricula::find($matricula_codigo);
@@ -686,10 +683,10 @@ class AtividadesController extends BaseController {
 					->orderBy('nivel')
 					->get();
 
-		$horas_necessarias = $matricula->horas_necessarias;
+		$horas_necessarias = (int)$matricula->horas_necessarias;
 		$horas_aceitas = (int)$matricula->horas_aceitas;
-		$horas_faltando = $matricula->horas_faltando;
-		$horas_necessarias_normais = $matricula->horas_necessarias_normais;
+		$horas_faltando = (int)$matricula->horas_faltando;
+		$horas_necessarias_normais = (int)$matricula->horas_necessarias_normais;
 		$horas_aceitas_normais = 0;
 		$horas_faltando_normais = 0;
 		$tipos_obrigatorios = array();
@@ -698,7 +695,7 @@ class AtividadesController extends BaseController {
 
 		$horas_aceitas_obrigatorias = 0;
 
-		foreach ($tipos as $tipo) {			
+		foreach ($tipos as $tipo) {
 			$tipo->horas_aceitas = 0;
 
 			if (array_key_exists($tipo->codigo, $tiposProcessados))
@@ -707,9 +704,9 @@ class AtividadesController extends BaseController {
 			if ((int)$tipo->obrigatorio === 1) {
 				$tipos_obrigatorios[] = $tipo;
 				$horas_aceitas_obrigatorias += $tipo->horas_aceitas;
-				$tipo->horas_necessarias = $tipo->horas;
+				$tipo->horas_necessarias = (int)$tipo->horas;
 
-				if ($matricula->status == Matricula::HOMOLOGADO)
+				if ((int)$matricula->status == Matricula::HOMOLOGADO)
 					$tipo->horas_faltando = 0;
 				else
 					$tipo->horas_faltando = max(0, $tipo->horas_necessarias - $tipo->horas_aceitas);
@@ -737,15 +734,15 @@ class AtividadesController extends BaseController {
 
 		return View::make('atividades/relatorioaluno')
 					->with('model', $model)
-					->with('matricula', $matricula)
-					->with('turma_codigo', $turma_codigo)
-					->with('status', $status);
+					->with('matricula', $matricula);
 	}
 
 	public function getRelatorioTurma()
 	{
 		$turma_codigo = Input::get('turma', Input::get('turma_codigo'));
 		$status = Input::get('status');
+		$data_inicial = Input::get('data_inicial');
+		$data_final = Input::get('data_final');
 		$matriculas = array();
 
 		if (empty($turma_codigo) === false) {
@@ -777,13 +774,24 @@ class AtividadesController extends BaseController {
 			}
 			else
 				$matriculas = $temp;
+
+			if (empty($data_inicial) === false || empty($data_final) === false) {
+				foreach ($matriculas as $matricula) {
+                    $horas_aceitas = Atividade::aceita($matricula->codigo, $data_inicial, $data_final)->sum("horas_aceitas");
+
+                    if (empty($horas_aceitas))
+                    	$horas_aceitas = 0;
+
+                    $matricula->horas_aceitas = (int)$horas_aceitas;
+				}
+			}
 		}
 
 		Input::flash();
 
 		return View::make('atividades/relatorioturma')
-					->with('model', $matriculas)
-					->with('turma_codigo', $turma_codigo);
+			->with('model', $matriculas)
+			->with('turma', Turma::find($turma_codigo));
 	}
 
 	private function enviarEmailNotificacaoParaAluno($alunos, $tituloAtividade = null)
@@ -797,7 +805,7 @@ class AtividadesController extends BaseController {
 			if ($aluno->notificar)
 				$emails[] = $aluno->email;
 		}
-		
+
 		if (count($emails))
 			Mail::queue('emails.notificaraluno', array('tituloAtividade' => $tituloAtividade), function($message) use($emails)
 			{
@@ -822,7 +830,7 @@ class AtividadesController extends BaseController {
 			    $message->bcc($emails)->subject('[UNIAC] Novas atividades para avaliação');
 			});
 
-			
+
 		}
 	}
 }

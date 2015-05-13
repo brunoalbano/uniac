@@ -16,7 +16,21 @@
 @section('content')
 
 	<?php
-		$opcoesUrl = '?turma_codigo=' . $turma_codigo . '&status=' . $status;
+		$turma_codigo = Input::get('turma', Input::get('turma_codigo'));
+		$status = Input::get('status');
+		$data_inicial = Input::get('data_inicial');
+		$data_final = Input::get('data_final');
+
+		$opcoesUrl = "?turma_codigo=$turma_codigo&status=$status&data_inicial=$data_inicial&data_final=$data_final";
+
+		$exibirhorasfaltando = empty($data_inicial) && empty($data_final);		
+
+		$filtro = array(
+			'aluno' => $matricula->usuario,
+			'turma' => $matricula->turma,
+			'data_inicial' => $data_inicial,
+			'data_final' => $data_final,
+			'status' => null);
 	?>
 
 <section>
@@ -31,24 +45,11 @@
 	@endif
 
 	@if(Auth::user()->aluno == false)
-		<div class="well">
-			<div class="row">
-			<div class="col-sm-6"><strong>Aluno:</strong> {{ $matricula->usuario->nome_completo }}, {{ $matricula->usuario->login }}</div>
-			<div class="col-sm-6"><strong>Turma:</strong> {{ $matricula->turma->nome . ', ' . $matricula->turma->curso->nome . ', ' . $matricula->turma->curso->campus->nome }}</div>
-			</div>
-		</div>
+
+		@include('atividades/relatoriofiltro', $filtro)
+
 	@endif
-<!--
-	<div class="visible-print">
-		
-			Necessárias: <strong>{{ $matricula->horas_necessarias }}</strong>;
-		
-			Aceitas: <strong>{{ $matricula->horas_aceitas }}</strong>;		
-		
-			Faltando: <strong>{{ $matricula->horas_faltando }}</strong>
-		
-	</div>
--->
+
 	<div class="row hidden-print">
 		<div class="col-sm-4">
 			<div class="alert alert-info">
@@ -60,11 +61,14 @@
 				Aceitas: <strong>{{ $model['horas_aceitas'] }}</strong>
 			</div>
 		</div>
+
+		@if ($exibirhorasfaltando)		
 		<div class="col-sm-4">
 			<div class="alert alert-warning">
 				Faltando: <strong>{{ $model['horas_faltando'] }}</strong>
 			</div>
 		</div>
+		@endif
 	</div>
 
 	<table class="table table-striped">
@@ -79,7 +83,9 @@
 				<th></th>
 				<th>Necessário</th>
 				<th>Aceitas</th>
+				@if ($exibirhorasfaltando)
 				<th>Faltando</th>
+				@endif
 			</tr>
 		</thead>
 		<tbody>
@@ -87,7 +93,9 @@
 				<td>Atividades Complementares</td>
 				<td>{{ $model['horas_necessarias_normais'] }}</td>
 				<td>{{ $model['horas_aceitas_normais'] }}</td>
+				@if ($exibirhorasfaltando)
 				<td>{{ $model['horas_faltando_normais'] }}</td>
+				@endif
 			</tr>
 			
 			@foreach($model['tipos_obrigatorios'] as $value)
@@ -96,7 +104,9 @@
 					<td>{{ $value->descricao }}</td>
 					<td>{{ $value->horas_necessarias }}</td>
 					<td>{{ $value->horas_aceitas }}</td>
+					@if ($exibirhorasfaltando)
 					<td>{{ $value->horas_faltando }}</td>
+					@endif
 				</tr>
 				@endif
 			@endforeach
@@ -107,7 +117,9 @@
 				<th>Total</th>
 				<th>{{ $model['horas_necessarias'] }}</th>
 				<th>{{ $model['horas_aceitas'] }}</th>
+				@if ($exibirhorasfaltando)
 				<th>{{ $model['horas_faltando'] }}</th>
+				@endif
 			</tr>
 		</tfoot>
 	</table>
@@ -119,14 +131,18 @@
 			<col>
 			<col style="width: 140px">
 			<col style="width: 90px">
+			@if ($exibirhorasfaltando)
 			<col style="width: 90px">
+			@endif
 		</colgroup>
 		<thead>
 			<tr>
 				<th>Tipos de atividade</th>
 				<th>Limite de horas</th>
 				<th>Aceitas</th>
+				@if ($exibirhorasfaltando)
 				<th>Disponíveis</th>
+				@endif
 			</tr>
 		</thead>
 		<tbody>
@@ -136,7 +152,9 @@
 				<td>Saldo anterior</td>
 				<td>-</td>
 				<td>{{ $model['saldo_anterior'] }}</td>
+				@if ($exibirhorasfaltando)
 				<td>-</td>
+				@endif
 			</tr>
 			@endif
 			
@@ -151,11 +169,15 @@
 					@if($value->possui_itens)
 						<td>{{ $value->horas }} no total</td>
 						<td>{{ $value->horas_aceitas }}</td>
+						@if ($exibirhorasfaltando)
 						<td>{{ $value->horas_disponiveis }}</td>
+						@endif
 					@else
 						<td>{{ $value->horas }} por atividade</td>
 						<td>{{ $value->horas_aceitas }}</td>
+						@if ($exibirhorasfaltando)
 						<td title="sem limite">&infin;</td>
+						@endif
 					@endif
 				</tr>
 				@endif

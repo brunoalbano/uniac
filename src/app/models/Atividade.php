@@ -152,4 +152,22 @@ class Atividade extends BaseEloquent {
 		return (int)$this->status === self::AGUARDANDO_AVALIACAO;
 	}
 
+	public function scopeAceita($query, $matricula_codigo, $data_inicial = null, $data_final = null)
+	{
+		$query
+			->where('matricula_codigo', '=', $matricula_codigo)
+			->where('status', '=', Atividade::ACEITA);
+
+		if (empty($data_inicial) === false && empty($data_final) === false)
+    		$query->whereBetween('avaliado_em', array($data_inicial, $data_final));
+    	else 
+    		if (empty($data_inicial) === false)
+    			$query->where('avaliado_em', '>=', $data_inicial);
+    		else
+    			if (empty($data_final) === false)
+    			{
+    				$data_final .= ' 23:59:59';
+    				$query->where('avaliado_em', '<=', $data_final);
+    			}
+	}
 }
