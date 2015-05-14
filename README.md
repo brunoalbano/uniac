@@ -17,7 +17,7 @@ TECNOLOGIAS
 
 [Bootstrap v3.1.1](http://getbootstrap.com)
 
-[jQWidgets v3.0.4](www.jqwidgets.com)
+[jQWidgets v3.0.4](http://www.jqwidgets.com)
 
 PHP 5.3
 
