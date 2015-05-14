@@ -20,7 +20,7 @@
 
 		<div>
 			<small>
-				Se você não deseja mais receber notificações por e-mail altere a configuração da sua conta <a href="{{ URL::to('configuracao') }}">clicando aqui</a>.
+				Se você não deseja mais receber notificações por e-mail altere a configuração da sua conta <a href="{{ URL::to('configuracoes') }}">clicando aqui</a>.
 			</small>
 		</div>
 
