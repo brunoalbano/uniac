@@ -274,7 +274,7 @@
             <footer class="hidden-print">
                 <hr>
 
-                <p>&copy; UNISAL 2014 <a class="pull-right" href="{{ url('sobre') }}">Sobre</a></p>
+                <p>&copy; UNISAL 2015 <a class="pull-right" href="{{ url('sobre') }}">Sobre</a></p>
             </footer>
 
 		</section> <!-- /container -->

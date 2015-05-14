@@ -10,6 +10,13 @@
 	<h3>Sobre</h3>
 	<hr/>
 	
+	<label>Versão:</label>
+
+	<p>
+		1.1.0
+	</p>
+
+	<br>
 	<label>Desenvolvido por:</label>
 
 	<p>
